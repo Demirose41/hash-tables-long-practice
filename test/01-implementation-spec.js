@@ -186,6 +186,7 @@ describe ('Phase 1 - Hash table implementation', function () {
 
     // check for values
     expect(hashTable.read("key2")).to.equal("value2")
+    expect(hashTable.read("key1")).to.equal("value1")
     expect(hashTable.read("key9")).to.equal("value9")
     expect(hashTable.read("key10")).to.equal("value10");
 
@@ -211,6 +212,6 @@ describe ('Phase 1 - Hash table implementation', function () {
     expect(hashTable.delete("key2")).to.equal("Key not found")
     expect(hashTable.delete("key10")).to.equal("Key not found")
 
-  });
+  }); 
 
 });

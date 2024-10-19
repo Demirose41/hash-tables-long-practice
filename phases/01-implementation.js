@@ -31,6 +31,7 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
 
 
   insert(key, value) {
+    if(this.count >= this.capacity * 0.7) this.resize()
     let idx = this.hashMod(key)
     let newPair = new KeyValuePair(key, value);
     if(this.data[idx]){
@@ -44,16 +45,17 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
         }
         node = node.next;
       }
-      // If we dont return out of the while loop then that key does not exist in the list
+
+      // If we dont return out of the while loop then that key does 
+      // not exist in the list
       newPair.next = this.data[idx];
       // set new pair to head
       this.data[idx] = newPair
-      this.count++
+      this.count++ 
     }else{
       this.data[idx] = newPair
       this.count++;
     }
-
   }
 
 
@@ -105,28 +107,32 @@ class HashTable { // get O(1), set O(1), deleteKey O(1)
 
 
   delete(key) {
-    // hash key for index
+    // check if key exists in bucket
     let index = this.hashMod(key);
-    // check data[index] exists
-    // if not return error string
-    if(this.data[index] === null) return "Key not found"
-    // check if index does exist and the key matchs
-    if(this.data[index] && this.data[index].key === key){
-      // check if data is a linked list
-      if(this.data[index].next){
-        this.data[index] = this.data[index].next;
-      }else{
-        this.data[index] = null;
-      }
-    }
-    if(this.data[index] && this.data[index].next){
-      let leafnode = this.data[index]
-      while(leafnode){
-        if(leafnode.next.key === key){
-          leafnode.next = null;
+    if(!this.read(key)) return "Key not found" 
+    if(this.data[index]){
+      let node = this.data[index]
+      if(node.key === key && node.next === null) this.data[index] = null;
+      while(node.next){
+        if(node.key === key) {
+          node = node.next;
+          this.data[index] = node
+          this.count--;
+          return;
+        }if(node.next.key === key){
+          if(node.next.next === null){
+            node.next = null;
+            this.count--;
+            return
+          }else{
+            node.next = node.next.next;
+            this.count--;
+            return
+          }
         }
-        leafnode = leafnode.next;
+        node = node.next;
       }
+      this.count--;
     }
 
 
